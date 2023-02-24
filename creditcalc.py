@@ -1,6 +1,10 @@
+#  This program calculates different variables of a loan, given parameter inputs from the command line.
+#  The variable calculated is the variable missing from the user's input
+
 import math
 import argparse
 
+#  Defines parser to accept inputs via the command line
 parser = argparse.ArgumentParser(description = "This program calculates missing variables of your differentiated loan")
 
 parser.add_argument("--type", help = "Choose between 'annuity' payment or differentiated ('diff') payment.")
@@ -39,32 +43,36 @@ for i in range(0, len(parameters)):  # Looping through list of parameters
 if counter < 4:  # Tests if user input less than 4 parameters
     error = True
 
-if error == True: print("Incorrect parameters")
+if error == True: print("Incorrect parameters")  # Lets user know that parameters were incorrectly submitted
 
-if error == False:
+if error == False:  # Runs loan calculations under the condition there are no input errors
 
+    # Calculations for the annuity loan type
     if args.type == "annuity":
+
+        # Calculates the payment given other parameters
         if args.payment == None:
 
             principal = int(args.principal)
             periods = int(args.periods)
             interest = float(args.interest)
-            i = interest / 1200
+            i = interest / 1200  # Interest is annual percentage rate, whereas i is monthly interest percentage
 
+            # Calculates payment and overpayment
             payment = int(math.ceil(principal * ((i * ((1 + i) ** periods)) / ((1 + i) ** periods - 1))))
-            overpayment = payment * periods - principal
+            overpayment = payment * periods - principal  # Calculates overpayment of loan due to final month's payment
 
             print(f"Your annuity payment = {payment}!")
             print(f"Overpayment = {overpayment}")
 
 
-
+        # Calculates the length of the loan in periods (months) given other parameters
         elif args.periods == None:
 
             principal = int(args.principal)
             payment = int(args.payment)
             interest = float(args.interest)
-            i = interest / 1200
+            i = interest / 1200  # Interest is annual percentage rate, whereas i is monthly interest percentage
             periods = math.ceil(math.log(payment / (payment - i * principal), 1 + i))
             years = periods // 12
             months = periods % 12
@@ -75,31 +83,34 @@ if error == False:
             else:
                 print(f"It will take {periods} months to repay the loan")
 
-            overpayment = periods * payment - principal
+            overpayment = periods * payment - principal # Calculates overpayment of loan due to final month's payment
 
             print(f"Overpayment = {overpayment}")
 
+        # Calculates loan principal given other parameters
         else:
 
             periods = int(args.periods)
             payment = int(args.payment)
             interest = float(args.interest)
 
-            i = interest / 1200
+            i = interest / 1200  # Interest is annual percentage rate, whereas i is monthly interest percentage
             args.principal = math.ceil(payment / ((i * ((1 + i) ** periods)) / ((1 + i) ** periods - 1)))
             overpayment = payment * periods - args.principal
 
             print(f"Your loan principal = {args.principal}!")
             print(f"Overpayment = {overpayment}")
 
-
+    # Calculations for the differentiated loan type
     if args.type == "diff":
+
+        # Calculates the payment given other parameters
         if args.payment == None:
 
             principal = int(args.principal)
             periods = int(args.periods)
             interest = float(args.interest)
-            i = interest / 1200
+            i = interest / 1200  # Interest is annual percentage rate, whereas i is monthly interest percentage
             diff_payments = []
             payment_total = 0
             for m in range(1, periods + 1):
